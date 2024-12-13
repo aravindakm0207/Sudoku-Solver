@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfiles, setSearch, setFilters, setPage } from '../redux/actions/profileActions';
 
 const ProfileDisplay = ({ onSummaryClick }) => {
-    const [profiles, setProfiles] = useState([]);
-    const [search, setSearch] = useState('');
-    const [filters, setFilters] = useState({ city: '', state: '', country: '' });
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+    const dispatch = useDispatch();
+    const { profiles, search, filters, page, totalPages } = useSelector(state => state);
 
+    // Fetch profiles when component mounts or when search, filters, or page changes
     useEffect(() => {
-        const fetchProfiles = async () => {
-            try {
-                const { data } = await axios.get('http://localhost:4000/profiles', {
-                    params: { search, page, ...filters },
-                });
-                setProfiles(data.data);
-                setTotalPages(data.pages);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchProfiles();
-    }, [search, filters, page]);
+        dispatch(fetchProfiles(search, page, filters));
+    }, [search, filters, page, dispatch]);
 
-    const handleSearchChange = (e) => setSearch(e.target.value);
+    const handleSearchChange = (e) => dispatch(setSearch(e.target.value));
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        setFilters((prev) => ({ ...prev, [name]: value }));
+        dispatch(setFilters({ ...filters, [name]: value }));
     };
 
     return (
@@ -72,11 +60,11 @@ const ProfileDisplay = ({ onSummaryClick }) => {
                 ))}
             </div>
             <div>
-                <button disabled={page <= 1} onClick={() => setPage((prev) => prev - 1)}>
+                <button disabled={page <= 1} onClick={() => dispatch(setPage(page - 1))}>
                     Previous
                 </button>
                 <span> Page {page} of {totalPages} </span>
-                <button disabled={page >= totalPages} onClick={() => setPage((prev) => prev + 1)}>
+                <button disabled={page >= totalPages} onClick={() => dispatch(setPage(page + 1))}>
                     Next
                 </button>
             </div>
