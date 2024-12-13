@@ -5,8 +5,10 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Home from './components/Home';
 import Account from './components/Account';
-import EmployeeForm from './components/EmployeeForm';
-import EmployeeTable from './components/EmployeeTable';
+import ProfileDisplay from './components/ProfileDisplay'; // Corrected import
+import MapComponent from './components/MapComponent';
+import AdminPanel from './components/AdminPanel';
+
 import PrivateRoute from './components/PrivateRoute'; // Assuming you have a PrivateRoute component for protected routes
 import { useAuth } from './context/AuthContext';
 import { useEffect } from 'react';
@@ -51,7 +53,7 @@ function App() {
 
   return (
     <div className="container">
-      <h2>Employee Management App</h2>
+      <h2>Frontend Case Study App</h2>
       <ToastContainer />
       <div>
         <nav>
@@ -64,8 +66,12 @@ function App() {
           ) : (
             <>
               <Link to="/account">Account</Link> |
-              <Link to="/employee-form">Add Employee</Link> |
-              <Link to="/employees">Employees</Link> |
+              <Link to="/profiles">Profiles</Link> |
+              {user.account?.role === 'admin' && (
+                <>
+                  <Link to="/admin">Admin Panel</Link> |
+                </>
+              )}
               <Link to="/" onClick={handleLogout}>Logout</Link>
             </>
           )}
@@ -75,7 +81,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register registerIn={registerIn} />} />
           <Route path="/login" element={<Login loggedIn={loggedIn} />} />
-          
+
           {/* Protected Routes */}
           <Route path="/account" element={
             <PrivateRoute>
@@ -83,19 +89,24 @@ function App() {
             </PrivateRoute>
           } />
 
-          
-          <Route path="/employee-form" element={
+          <Route path="/profiles" element={
             <PrivateRoute>
-              <EmployeeForm />
+              <ProfileDisplay onSummaryClick={(profile) => alert(`Viewing summary for: ${profile.name}`)} />
             </PrivateRoute>
           } />
 
-          <Route path="/employees" element={
+          {/* Admin Panel route accessible only to admins */}
+          <Route path="/admin" element={
             <PrivateRoute>
-              <EmployeeTable />
+              {user.account?.role === 'admin' ? (
+                <AdminPanel />
+              ) : (
+                <div>Access Denied</div>
+              )}
             </PrivateRoute>
           } />
 
+          <Route path="/map" element={<MapComponent address={{ latitude: 37.7749, longitude: -122.4194, city: 'San Francisco', state: 'CA', country: 'USA' }} />} />
         </Routes>
 
         <ToastContainer position="top-center" />

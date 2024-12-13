@@ -4,13 +4,13 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 
-export default function Register({ registerIn }) {
+export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    firstname: '',
-    lastname: '',
+    name: '',  // Single field to store the full name (firstname + lastname)
     email: '',
     password: '',
+    role: 'user',  // Default value for role
     serverErrors: [],
     clientErrors: {}
   });
@@ -18,21 +18,18 @@ export default function Register({ registerIn }) {
   const errors = {};
 
   const runValidations = () => {
-    if (form.firstname.trim().length === 0) {
-      errors.firstname = 'firstname is required';
-    }
-    if (form.lastname.trim().length === 0) {
-      errors.lastname = 'lastname is required';
+    if (form.name.trim().length === 0) {
+      errors.name = 'Name is required';
     }
     if (form.email.trim().length === 0) {
-      errors.email = 'email is required';
+      errors.email = 'Email is required';
     } else if (!validator.isEmail(form.email)) {
-      errors.email = 'invalid email format';
+      errors.email = 'Invalid email format';
     }
     if (form.password.trim().length === 0) {
-      errors.password = 'password is required';
+      errors.password = 'Password is required';
     } else if (form.password.trim().length < 8 || form.password.trim().length > 128) {
-      errors.password = 'password should be between 8 - 128 characters';
+      errors.password = 'Password should be between 8 - 128 characters';
     }
   };
 
@@ -43,7 +40,7 @@ export default function Register({ registerIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = _.pick(form, ['firstname', 'lastname', 'email', 'password']);
+    const formData = _.pick(form, ['name', 'email', 'password', 'role']);
     
     runValidations();
 
@@ -51,8 +48,7 @@ export default function Register({ registerIn }) {
       try {
         const response = await axios.post('http://localhost:4000/users/register', formData);
         console.log(response.data);
-        
-        navigate('/login');
+        navigate('/login'); // Redirect to login after successful registration
       } catch (err) {
         console.log(err);
         setForm({ ...form, serverErrors: err.response?.data?.errors || [err.message] });
@@ -77,31 +73,20 @@ export default function Register({ registerIn }) {
     <div>
       <h1>Register With Us</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="firstname">Enter firstname</label><br />
+        <label htmlFor="name">Enter full name</label><br />
         <input
           type="text"
-          value={form.firstname}
+          value={form.name}
           onChange={handleChange}
-          name="firstname"
-          id="firstname"
+          name="name"
+          id="name"
         />
-        {form.clientErrors.firstname && <span>{form.clientErrors.firstname}</span>}
-        <br />
-
-        <label htmlFor="lastname">Enter lastname</label><br />
-        <input
-          type="text"
-          value={form.lastname}
-          onChange={handleChange}
-          name="lastname"
-          id="lastname"
-        />
-        {form.clientErrors.lastname && <span>{form.clientErrors.lastname}</span>}
+        {form.clientErrors.name && <span>{form.clientErrors.name}</span>}
         <br />
 
         <label htmlFor="email">Enter email</label><br />
         <input
-          type="text"
+          type="email"
           value={form.email}
           onChange={handleChange}
           name="email"
@@ -119,6 +104,18 @@ export default function Register({ registerIn }) {
           id="password"
         />
         {form.clientErrors.password && <span>{form.clientErrors.password}</span>}
+        <br />
+
+        <label htmlFor="role">Select role</label><br />
+        <select
+          value={form.role}
+          onChange={handleChange}
+          name="role"
+          id="role"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
         <br />
 
         <input type="submit" />

@@ -9,8 +9,7 @@ export default function Account() {
             <h2>Account Info</h2>
             {user && (
                 <>
-                    <p>First Name - {user.account?.firstname}</p>
-                    <p>Last Name - {user.account?.lastname}</p>
+                    <p>First Name - {user.account?.name}</p>
                     <p>Email - {user.account?.email}</p>
                   
                 </>
