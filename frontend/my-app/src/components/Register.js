@@ -3,6 +3,7 @@ import validator from "validator";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, FormHelperText, Box } from '@mui/material';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -70,57 +71,64 @@ export default function Register() {
   );
 
   return (
-    <div>
+    <Box sx={{ maxWidth: 400, margin: 'auto', padding: 2 }}>
       <h1>Register With Us</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter full name</label><br />
-        <input
-          type="text"
+        <TextField
+          label="Enter full name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={form.name}
           onChange={handleChange}
           name="name"
-          id="name"
+          error={!!form.clientErrors.name}
+          helperText={form.clientErrors.name}
         />
-        {form.clientErrors.name && <span>{form.clientErrors.name}</span>}
-        <br />
 
-        <label htmlFor="email">Enter email</label><br />
-        <input
-          type="email"
+        <TextField
+          label="Enter email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={form.email}
           onChange={handleChange}
           name="email"
-          id="email"
+          error={!!form.clientErrors.email}
+          helperText={form.clientErrors.email}
         />
-        {form.clientErrors.email && <span>{form.clientErrors.email}</span>}
-        <br />
 
-        <label htmlFor="password">Enter password</label><br />
-        <input
+        <TextField
+          label="Enter password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           type="password"
           value={form.password}
           onChange={handleChange}
           name="password"
-          id="password"
+          error={!!form.clientErrors.password}
+          helperText={form.clientErrors.password}
         />
-        {form.clientErrors.password && <span>{form.clientErrors.password}</span>}
-        <br />
 
-        <label htmlFor="role">Select role</label><br />
-        <select
-          value={form.role}
-          onChange={handleChange}
-          name="role"
-          id="role"
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-        <br />
+        <FormControl fullWidth margin="normal" error={!!form.clientErrors.role}>
+          
+          <Select
+            value={form.role}
+            onChange={handleChange}
+            name="role"
+          >
+            <MenuItem value="user">User</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+          </Select>
+          {form.clientErrors.role && <FormHelperText>{form.clientErrors.role}</FormHelperText>}
+        </FormControl>
 
-        <input type="submit" />
+        <Button type="submit" variant="contained" fullWidth sx={{ marginTop: 2 }}>
+          Register
+        </Button>
       </form>
       {form.serverErrors.length > 0 && displayErrors()}
-    </div>
+    </Box>
   );
 }

@@ -1,6 +1,6 @@
 // reducers/profileReducer.js
 
-import { SET_PROFILES, SET_TOTAL_PAGES, SET_SEARCH, SET_FILTERS, SET_PAGE } from '../actions/profileActions';
+import { SET_PROFILES_SUCCESS, SET_TOTAL_PAGES_SUCCESS, SET_SEARCH, SET_FILTERS, SET_PAGE } from '../actions/profileActions';
 
 const initialState = {
   profiles: [],
@@ -12,9 +12,9 @@ const initialState = {
 
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_PROFILES:
+    case SET_PROFILES_SUCCESS:
       return { ...state, profiles: action.payload };
-    case SET_TOTAL_PAGES:
+    case SET_TOTAL_PAGES_SUCCESS: // Updated to match the action type
       return { ...state, totalPages: action.payload };
     case SET_SEARCH:
       return { ...state, search: action.payload };

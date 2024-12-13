@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { TextField, Button, Card, CardContent, Typography, Box } from '@mui/material';
 
 const AdminPanel = () => {
     const [profiles, setProfiles] = useState([]);
@@ -43,64 +44,104 @@ const AdminPanel = () => {
     };
 
     return (
-        <div>
-            <h2>Admin Panel</h2>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="Description"
-                    name="description"
-                    value={form.description}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="Photo URL"
-                    name="photo"
-                    value={form.photo}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="City"
-                    name="address.city"
-                    value={form.address.city || ''}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="State"
-                    name="address.state"
-                    value={form.address.state || ''}
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    placeholder="Country"
-                    name="address.country"
-                    value={form.address.country || ''}
-                    onChange={handleChange}
-                />
-                <button onClick={handleSave}>Save</button>
-            </div>
+        <Box sx={{ maxWidth: 900, margin: '0 auto', padding: 2 }}>
+            <Typography variant="h4" gutterBottom>
+                Admin Panel
+            </Typography>
+
+            <Card variant="outlined" sx={{ marginBottom: 2 }}>
+                <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                        {form._id ? 'Edit Profile' : 'Create Profile'}
+                    </Typography>
+
+                    <TextField
+                        label="Name"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Description"
+                        name="description"
+                        value={form.description}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Photo URL"
+                        name="photo"
+                        value={form.photo}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="City"
+                        name="address.city"
+                        value={form.address.city || ''}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="State"
+                        name="address.state"
+                        value={form.address.state || ''}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Country"
+                        name="address.country"
+                        value={form.address.country || ''}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSave}
+                        sx={{ marginTop: 2 }}
+                    >
+                        Save
+                    </Button>
+                </CardContent>
+            </Card>
+
             <div>
                 {profiles.map((profile) => (
-                    <div key={profile._id}>
-                        <h3>{profile.name}</h3>
-                        <p>{profile.description}</p>
-                        <button onClick={() => setForm(profile)}>Edit</button>
-                        <button onClick={() => handleDelete(profile._id)}>Delete</button>
-                    </div>
+                    <Card key={profile._id} variant="outlined" sx={{ marginBottom: 2 }}>
+                        <CardContent>
+                            <Typography variant="h6">{profile.name}</Typography>
+                            <Typography variant="body1" color="textSecondary" gutterBottom>
+                                {profile.description}
+                            </Typography>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => setForm(profile)}
+                                sx={{ marginRight: 1 }}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={() => handleDelete(profile._id)}
+                            >
+                                Delete
+                            </Button>
+                        </CardContent>
+                    </Card>
                 ))}
             </div>
-        </div>
+        </Box>
     );
 };
 

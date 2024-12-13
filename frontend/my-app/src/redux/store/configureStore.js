@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import {thunk} from 'redux-thunk'; 
-import {sectionReducer} from '../reducers/sectionReducer';
+import profileReducer from '../reducers/profileReducer';
 
 
 const configureStore = () => {
   const store = createStore(combineReducers({
-    profiles: profileReducer,
+    profile: profileReducer,
      
  }), applyMiddleware(thunk))
  return store 

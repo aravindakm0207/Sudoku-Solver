@@ -4,14 +4,19 @@ import App from './App';
 
 import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom'; 
-import { store } from './store';
+
+import configureStore from './redux/store/configureStore';
+import { Provider } from 'react-redux';
+
+// Initialize the store
+const store = configureStore(); // Add this line to create the store
 
 const rootElement = document.getElementById('root');
 
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <Provider store={store}> 
+    <Provider store={store}>  {/* Use store here */}
       <AuthProvider>
         <BrowserRouter> 
           <App />

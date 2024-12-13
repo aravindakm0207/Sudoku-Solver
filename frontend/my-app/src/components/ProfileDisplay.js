@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfiles, setSearch, setFilters, setPage } from '../redux/actions/profileActions';
+import { TextField, Button, Box, Typography, Grid, Card, CardContent } from '@mui/material';
 
 const ProfileDisplay = ({ onSummaryClick }) => {
     const dispatch = useDispatch();
@@ -18,57 +19,90 @@ const ProfileDisplay = ({ onSummaryClick }) => {
     };
 
     return (
-        <div>
-            <h2>Profiles</h2>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Search by name or description"
+        <Box sx={{ padding: 2 }}>
+            <Typography variant="h4" gutterBottom>Profiles</Typography>
+
+            {/* Search and Filter Inputs */}
+            <Box sx={{ display: 'flex', gap: 2, marginBottom: 3 }}>
+                <TextField
+                    label="Search by name or description"
+                    variant="outlined"
+                    fullWidth
                     value={search}
                     onChange={handleSearchChange}
                 />
-                <input
-                    type="text"
-                    placeholder="City"
+                <TextField
+                    label="City"
+                    variant="outlined"
                     name="city"
                     value={filters.city}
                     onChange={handleFilterChange}
                 />
-                <input
-                    type="text"
-                    placeholder="State"
+                <TextField
+                    label="State"
+                    variant="outlined"
                     name="state"
                     value={filters.state}
                     onChange={handleFilterChange}
                 />
-                <input
-                    type="text"
-                    placeholder="Country"
+                <TextField
+                    label="Country"
+                    variant="outlined"
                     name="country"
                     value={filters.country}
                     onChange={handleFilterChange}
                 />
-            </div>
-            <div>
+            </Box>
+
+            {/* Profiles List */}
+            <Grid container spacing={2}>
                 {profiles.map((profile) => (
-                    <div key={profile._id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-                        <img src={profile.photo || '/placeholder.jpg'} alt={profile.name} style={{ width: '100px', height: '100px' }} />
-                        <h3>{profile.name}</h3>
-                        <p>{profile.description}</p>
-                        <button onClick={() => onSummaryClick(profile)}>Summary</button>
-                    </div>
+                    <Grid item xs={12} sm={6} md={4} key={profile._id}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <img
+                                    src={profile.photo || '/placeholder.jpg'}
+                                    alt={profile.name}
+                                    style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+                                />
+                                <Typography variant="h6" gutterBottom>{profile.name}</Typography>
+                                <Typography variant="body2" color="textSecondary">{profile.description}</Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    sx={{ marginTop: 2 }}
+                                    onClick={() => onSummaryClick(profile)}
+                                >
+                                    Summary
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 ))}
-            </div>
-            <div>
-                <button disabled={page <= 1} onClick={() => dispatch(setPage(page - 1))}>
+            </Grid>
+
+            {/* Pagination Controls */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 3 }}>
+                <Button
+                    variant="outlined"
+                    disabled={page <= 1}
+                    onClick={() => dispatch(setPage(page - 1))}
+                >
                     Previous
-                </button>
-                <span> Page {page} of {totalPages} </span>
-                <button disabled={page >= totalPages} onClick={() => dispatch(setPage(page + 1))}>
+                </Button>
+                <Typography variant="body1">
+                    Page {page} of {totalPages}
+                </Typography>
+                <Button
+                    variant="outlined"
+                    disabled={page >= totalPages}
+                    onClick={() => dispatch(setPage(page + 1))}
+                >
                     Next
-                </button>
-            </div>
-        </div>
+                </Button>
+            </Box>
+        </Box>
     );
 };
 

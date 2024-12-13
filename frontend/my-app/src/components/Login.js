@@ -1,118 +1,138 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import validator from 'validator'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import _ from 'lodash'
-import { useAuth } from '../context/AuthContext'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import validator from 'validator';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import _ from 'lodash';
+import { useAuth } from '../context/AuthContext';
+import { TextField, Button, Typography, Box, CircularProgress } from '@mui/material';
+
 export default function Login() {
-    const navigate = useNavigate()
-    const { dispatch } = useAuth() 
+    const navigate = useNavigate();
+    const { dispatch } = useAuth();
 
     const [form, setForm] = useState({
         email: '',
         password: '',
         serverErrors: null, 
         clientErrors: {}
-    })
+    });
 
-    const errors = {}
+    const errors = {};
 
     const runValidations = () => {
-        if(form.email.trim().length === 0) {
-            errors.email = 'email is required'
-        } else if(!validator.isEmail(form.email)) {
-            errors.email = 'invalid email format'
+        if (form.email.trim().length === 0) {
+            errors.email = 'Email is required';
+        } else if (!validator.isEmail(form.email)) {
+            errors.email = 'Invalid email format';
         }
 
-        if(form.password.trim().length === 0) {
-            errors.password = 'password is required'
-        } else if(form.password.trim().length < 8 || form.password.trim().length > 128) {
-            errors.password = 'invalid password length'
+        if (form.password.trim().length === 0) {
+            errors.password = 'Password is required';
+        } else if (form.password.trim().length < 8 || form.password.trim().length > 128) {
+            errors.password = 'Password must be between 8 and 128 characters';
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
-        e.preventDefault() 
-        const formData = _.pick(form, ['email', 'password'])
+        e.preventDefault();
+        const formData = _.pick(form, ['email', 'password']);
 
-        runValidations()
+        runValidations();
 
-        if(Object.keys(errors).length === 0 ) {
-            try { 
-                const response = await axios.post('http://localhost:4000/users/login', formData) 
-                localStorage.setItem('token', response.data.token)
+        if (Object.keys(errors).length === 0) {
+            try {
+                const response = await axios.post('http://localhost:4000/users/login', formData);
+                localStorage.setItem('token', response.data.token);
                 const userResponse = await axios.get('http://localhost:4000/users/account', { 
-                    headers : {
+                    headers: {
                         Authorization: localStorage.getItem('token')
                     }
-                })
-                console.log(userResponse.data)
-                dispatch({ type: "LOGIN", payload: { account: userResponse.data } })
-                navigate('/')
-            } catch(err) {
-                setForm({...form, serverErrors: err.response.data.errors, clientErrors: {} })
+                });
+                dispatch({ type: "LOGIN", payload: { account: userResponse.data } });
+                navigate('/');
+            } catch (err) {
+                setForm({ ...form, serverErrors: err.response.data.errors, clientErrors: {} });
             }
         } else {
-            setForm({...form, clientErrors: errors})
+            setForm({ ...form, clientErrors: errors });
         }
-    }
+    };
 
     const handleChange = (e) => {
-        const { value, name } = e.target 
-        setForm({...form, [name]: value })
-    }
+        const { value, name } = e.target;
+        setForm({ ...form, [name]: value });
+    };
 
     const displayErrors = () => {
-        let result 
-        if(typeof form.serverErrors == 'string') {
-            result = <p> { form.serverErrors } </p>
+        let result;
+        if (typeof form.serverErrors === 'string') {
+            result = <Typography color="error"> {form.serverErrors} </Typography>;
         } else {
             result = (
-                <div>
-                    <h3>Theses errors prohibitted the form from being saved: </h3>
+                <Box>
+                    <Typography variant="h6" color="error">
+                        These errors prohibited the form from being saved:
+                    </Typography>
                     <ul>
-                        { form.serverErrors.map((ele, i) => {
-                            return <li key={i}> { ele.msg } </li>
-                        })}
+                        {form.serverErrors.map((ele, i) => (
+                            <li key={i}>
+                                <Typography variant="body2" color="error">
+                                    {ele.msg}
+                                </Typography>
+                            </li>
+                        ))}
                     </ul>
-                </div>
-            )
+                </Box>
+            );
         }
-        return result 
-    }
-    
+        return result;
+    };
+
     return (
-        <div>
-            <h2>Login</h2>
-            { form.serverErrors && displayErrors() } 
+        <Box sx={{ maxWidth: 400, margin: '0 auto', padding: 2 }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+                Login
+            </Typography>
+            {form.serverErrors && displayErrors()}
             <form onSubmit={handleSubmit}>
-                <label htmlFor="email">Enter email</label><br />
-                <input 
-                    type="text" 
-                    value={form.email} 
+                <TextField
+                    label="Email"
+                    type="text"
+                    value={form.email}
                     onChange={handleChange}
-                    name="email" 
-                    id="email"
+                    name="email"
+                    fullWidth
+                    margin="normal"
+                    error={!!form.clientErrors.email}
+                    helperText={form.clientErrors.email}
                 />
-                { form.clientErrors.email && <span> { form.clientErrors.email } </span>}
-                 <br />
-
-                <label htmlFor="password">Enter password</label><br />
-                <input 
-                    type="password" 
-                    value={form.password} 
-                    onChange={handleChange} 
+                <TextField
+                    label="Password"
+                    type="password"
+                    value={form.password}
+                    onChange={handleChange}
                     name="password"
-                    id="password"
-                /> 
-                { form.clientErrors.password && <span> { form.clientErrors.password } </span> }
-                <br />
-
-                <input type="submit" /> 
+                    fullWidth
+                    margin="normal"
+                    error={!!form.clientErrors.password}
+                    helperText={form.clientErrors.password}
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ marginTop: 2 }}
+                >
+                    {form.serverErrors ? <CircularProgress size={24} color="secondary" /> : 'Login'}
+                </Button>
             </form>
-
-            <Link to="/register">Create an account</Link>
-        </div>
-    )
+            <Box sx={{ marginTop: 2, textAlign: 'center' }}>
+                <Typography variant="body2">
+                    Don't have an account? <Link to="/register">Create one</Link>
+                </Typography>
+            </Box>
+        </Box>
+    );
 }
