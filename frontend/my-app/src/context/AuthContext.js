@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useReducer } from 'react' 
 
 const AuthContext = createContext() 
@@ -9,10 +10,10 @@ export const useAuth = () => {
 const reducer = (state, action) => {
     switch(action.type) {
         case 'LOGIN' : {
-            return {...state, isLoggedIn: true, account: action.payload.account, profile: action.payload.profile }
+            return {...state, isLoggedIn: true, account: action.payload.account}
         }
         case 'LOGOUT' : {
-            return {...state, isLoggedIn: false, account: null, profile: null } 
+            return {...state, isLoggedIn: false, account: null,  } 
         }
         case 'SET_PROFILE' : {
             return {...state, profile: action.payload }
@@ -29,20 +30,13 @@ export const AuthProvider = ({ children }) => {
         account: null,
         profile: null 
     })
-    // const [user, setUser] = useState(null)
-
-    // const handleLogin = (user) => {
-    //     setUser(user)
-    // }
-    
-    // const handleLogout = () => {
-    //     setUser(null) 
-    // }
+   
 
     return (
-        // <AuthContext.Provider value={{ user, handleLogin, handleLogout}}>
+        
         <AuthContext.Provider value={{ user, dispatch}}>
             { children }
         </AuthContext.Provider>
     )
 }
+    

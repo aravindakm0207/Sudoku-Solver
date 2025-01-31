@@ -1,3 +1,61 @@
+/*
+mport React from 'react';
+import ReactDOM from 'react-dom/client';
+
+import App from './App';
+
+const rootElement = document.getElementById('root');
+const root = ReactDOM.createRoot(rootElement);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+*/
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -16,7 +74,7 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <Provider store={store}>  {/* Use store here */}
+    <Provider store={store}>  
       <AuthProvider>
         <BrowserRouter> 
           <App />
@@ -27,3 +85,4 @@ if (rootElement) {
 } else {
   console.error('Root element not found');
 }
+*/

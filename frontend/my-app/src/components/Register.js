@@ -3,15 +3,14 @@ import validator from "validator";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, FormHelperText, Box } from '@mui/material';
 
 export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',  // Single field to store the full name (firstname + lastname)
+    name: '',
     email: '',
     password: '',
-    role: 'user',  // Default value for role
+    phone: '',  // New field for phone
     serverErrors: [],
     clientErrors: {}
   });
@@ -32,6 +31,11 @@ export default function Register() {
     } else if (form.password.trim().length < 8 || form.password.trim().length > 128) {
       errors.password = 'Password should be between 8 - 128 characters';
     }
+    if (form.phone.trim().length === 0) {
+      errors.phone = 'Phone number is required';
+    } else if (!validator.isMobilePhone(form.phone)) {
+      errors.phone = 'Invalid phone number format';
+    }
   };
 
   const handleChange = (e) => {
@@ -41,7 +45,7 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = _.pick(form, ['name', 'email', 'password', 'role']);
+    const formData = _.pick(form, ['name', 'email', 'password', 'phone']);
     
     runValidations();
 
@@ -71,64 +75,55 @@ export default function Register() {
   );
 
   return (
-    <Box sx={{ maxWidth: 400, margin: 'auto', padding: 2 }}>
+    <div>
       <h1>Register With Us</h1>
       <form onSubmit={handleSubmit}>
-        <TextField
-          label="Enter full name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={form.name}
-          onChange={handleChange}
-          name="name"
-          error={!!form.clientErrors.name}
-          helperText={form.clientErrors.name}
-        />
-
-        <TextField
-          label="Enter email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={form.email}
-          onChange={handleChange}
-          name="email"
-          error={!!form.clientErrors.email}
-          helperText={form.clientErrors.email}
-        />
-
-        <TextField
-          label="Enter password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          name="password"
-          error={!!form.clientErrors.password}
-          helperText={form.clientErrors.password}
-        />
-
-        <FormControl fullWidth margin="normal" error={!!form.clientErrors.role}>
-          
-          <Select
-            value={form.role}
+        <div>
+          <label>Enter full name</label><br/>
+          <input
+            type="text"
+            value={form.name}
             onChange={handleChange}
-            name="role"
-          >
-            <MenuItem value="user">User</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-          </Select>
-          {form.clientErrors.role && <FormHelperText>{form.clientErrors.role}</FormHelperText>}
-        </FormControl>
+            name="name"
+          />
+          {form.clientErrors.name && <p>{form.clientErrors.name}</p>}
+        </div>
+        <div>
+          <label>Enter email</label><br/>
+          <input
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            name="email"
+          />
+          {form.clientErrors.email && <p>{form.clientErrors.email}</p>}
+        </div>
 
-        <Button type="submit" variant="contained" fullWidth sx={{ marginTop: 2 }}>
-          Register
-        </Button>
+        <div>
+          <label>Enter password</label><br/>
+          <input
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            name="password"
+          />
+          {form.clientErrors.password && <p>{form.clientErrors.password}</p>}
+        </div>
+
+        <div>
+          <label>Enter phone number</label><br/>
+          <input
+            type="text"
+            value={form.phone}
+            onChange={handleChange}
+            name="phone"
+          />
+          {form.clientErrors.phone && <p>{form.clientErrors.phone}</p>}
+        </div>
+
+        <button type="submit">Register</button>
       </form>
       {form.serverErrors.length > 0 && displayErrors()}
-    </Box>
+    </div>
   );
 }

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import _ from 'lodash';
 import { useAuth } from '../context/AuthContext';
-import { TextField, Button, Typography, Box, CircularProgress } from '@mui/material';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -14,7 +13,7 @@ export default function Login() {
     const [form, setForm] = useState({
         email: '',
         password: '',
-        serverErrors: null, 
+        serverErrors: null,
         clientErrors: {}
     });
 
@@ -67,72 +66,60 @@ export default function Login() {
     const displayErrors = () => {
         let result;
         if (typeof form.serverErrors === 'string') {
-            result = <Typography color="error"> {form.serverErrors} </Typography>;
+            result = <div style={{ color: 'red' }}>{form.serverErrors}</div>;
         } else {
             result = (
-                <Box>
-                    <Typography variant="h6" color="error">
-                        These errors prohibited the form from being saved:
-                    </Typography>
+                <div>
+                    <h6 style={{ color: 'red' }}>These errors prohibited the form from being saved:</h6>
                     <ul>
                         {form.serverErrors.map((ele, i) => (
-                            <li key={i}>
-                                <Typography variant="body2" color="error">
-                                    {ele.msg}
-                                </Typography>
+                            <li key={i} style={{ color: 'red' }}>
+                                {ele.msg}
                             </li>
                         ))}
                     </ul>
-                </Box>
+                </div>
             );
         }
         return result;
     };
 
     return (
-        <Box sx={{ maxWidth: 400, margin: '0 auto', padding: 2 }}>
-            <Typography variant="h4" component="h2" gutterBottom>
-                Login
-            </Typography>
+        <div>
+            <h2>Login</h2>
             {form.serverErrors && displayErrors()}
             <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Email"
-                    type="text"
-                    value={form.email}
-                    onChange={handleChange}
-                    name="email"
-                    fullWidth
-                    margin="normal"
-                    error={!!form.clientErrors.email}
-                    helperText={form.clientErrors.email}
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    name="password"
-                    fullWidth
-                    margin="normal"
-                    error={!!form.clientErrors.password}
-                    helperText={form.clientErrors.password}
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                >
-                    {form.serverErrors ? <CircularProgress size={24} color="secondary" /> : 'Login'}
-                </Button>
+                <div>
+                    <label>Email</label><br/>
+                    <input
+                        type="text"
+                        value={form.email}
+                        onChange={handleChange}
+                        name="email"
+                        fullWidth
+                    />
+                    {form.clientErrors.email && <p style={{ color: 'red' }}>{form.clientErrors.email}</p>}
+                </div>
+                <div>
+                    <label>Password</label><br/>
+                    <input
+                        type="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        name="password"
+                        fullWidth
+                    />
+                    {form.clientErrors.password && <p style={{ color: 'red' }}>{form.clientErrors.password}</p>}
+                </div>
+                <button type="submit">
+                    {form.serverErrors ? 'Loading...' : 'Login'}
+                </button>
             </form>
-            <Box sx={{ marginTop: 2, textAlign: 'center' }}>
-                <Typography variant="body2">
+            <div >
+                <p>
                     Don't have an account? <Link to="/register">Create one</Link>
-                </Typography>
-            </Box>
-        </Box>
+                </p>
+            </div>
+        </div>
     );
 }

@@ -36,13 +36,7 @@ const userSchemaValidation = {
       errorMessage: "Password should be at least 6 characters",
     },
   },
-  role: {
-    optional: true,
-    isIn: {
-      options: [['user', 'admin']],
-      errorMessage: "Role must be either 'user' or 'admin'",
-    },
-  }
+ 
 };
 
 module.exports = userSchemaValidation;
